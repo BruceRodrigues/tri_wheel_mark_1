@@ -6,7 +6,7 @@ using namespace Engine;
 
 const int MAX_SPEED = 255;
 const int MIN_SPEED = 0;
-const int SPEED_STEP = 5;
+const int SPEED_STEP = 10;
 
 Wheel::Wheel(int forwardPin, int backwardPin, int pwmPin) {
     this->forwardPin = forwardPin;
@@ -33,32 +33,34 @@ void Wheel::backward() {
 void Wheel::reset() {
     digitalWrite(this->forwardPin, LOW);
     digitalWrite(this->backwardPin, LOW);
-    digitalWrite(this->pwmPin, LOW);
+    this->speed = 0;
+    analogWrite(this->pwmPin, this->speed);
 }
 
 void Wheel::gas() {
-    if (DEBUG) {
-        Serial.print("GAS - current speed: ");
-        Serial.println(this->speed);
-    }
-
     if ( this->speed >= MAX_SPEED ) {
         return;
     }
 
     this->speed += SPEED_STEP;
     analogWrite(this->pwmPin, this->speed);
+
+    if (DEBUG) {
+        Serial.print("GAS - current speed: ");
+        Serial.println(this->speed);
+    }
 }
 
 void Wheel::breaking() {
+    if ( this->speed <= MIN_SPEED ) {
+        return;
+    }
+
+    this->speed -= SPEED_STEP;
+    analogWrite(this->pwmPin, this->speed);
+
     if (DEBUG) {
         Serial.print("BREAKING - current speed: ");
         Serial.println(this->speed);
     }
-
-    if ( this->speed <= MIN_SPEED ) {
-        return;
-    }
-    this->speed -= SPEED_STEP;
-    analogWrite(this->pwmPin, this->speed);
 }

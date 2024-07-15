@@ -1,36 +1,46 @@
+#include <Arduino.h>
 #include "engine/stateMachine/engineStates.h"
 
 using namespace Engine;
 
 void Idle::execute(Wheel* rightWheel, Wheel* leftWheel) {
-    //TODO
+    rightWheel->reset();
+    leftWheel->reset();
 }
 
 void Gas::execute(Wheel* rightWheel, Wheel* leftWheel) {
-    //TODO
+    Serial.print("Gas");
+    leftWheel->forward();
+    rightWheel->forward();
+    leftWheel->gas();
+    rightWheel->gas();
 }
 
 void Breaking::execute(Wheel* rightWheel, Wheel* leftWheel) {
-    //TODO
+    rightWheel->breaking();
+    leftWheel->breaking();
 }
 
 void TurnRightGasing::execute(Wheel* rightWheel, Wheel* leftWheel) {
-    //TODO
+    leftWheel->forward();
+    rightWheel->breaking();
 }
 
 void TurnLeftGasing::execute(Wheel* rightWheel, Wheel* leftWheel) {
-    //TODO
+    rightWheel->forward();
+    leftWheel->breaking();
 }
 
 void TurnRightBreaking::execute(Wheel* rightWheel, Wheel* leftWheel) {
-    //TODO
+    rightWheel->breaking();
 }
 
 void TurnLeftBreaking::execute(Wheel* rightWheel, Wheel* leftWheel) {
-    //TODO
+    leftWheel->breaking();
 }
 
 void Reverse::execute(Wheel* rightWheel, Wheel* leftWheel) {
-    //TODO
+    leftWheel->backward();
+    rightWheel->backward();
 }
 

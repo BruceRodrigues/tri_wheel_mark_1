@@ -1,8 +1,10 @@
 #include "engine/motorEngine.h"
 #include "pins.h"
+#include "config.h"
 #include "engine/stateMachine/state.h"
 #include "engine/stateMachine/engineStates.h"
 #include "engine/wheel.h"
+#include "engine/motorEngineTest.h"
 
 using namespace Engine;
 
@@ -18,6 +20,11 @@ void MotorEngine::setup() {
 }
 
 void MotorEngine::update() {
+    if (TEST_MODE) {
+        testMotorEngine(this->leftWheel, this->rightWheel);
+        return;
+    }
+
     this->currentState->execute(this->rightWheel, this->leftWheel);
 }
 

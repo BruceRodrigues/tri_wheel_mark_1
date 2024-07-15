@@ -15,9 +15,9 @@ namespace Engine {
         void transitionTo(State* newState);
 
     private:
+        State* currentState;
         Wheel* leftWheel;
         Wheel* rightWheel;
-        State* currentState;
     };
 }
 
