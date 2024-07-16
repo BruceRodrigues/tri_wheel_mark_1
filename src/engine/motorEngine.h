@@ -2,7 +2,6 @@
 #define ENGINE_H
 
 #include "engine/wheel.h"
-#include "engine/stateMachine/state.h"
 
 namespace Engine {
     
@@ -11,11 +10,9 @@ namespace Engine {
     public:
         MotorEngine();
         void setup();
-        void update();
-        void transitionTo(State* newState);
+        void setSpeed(int y, int x);
 
     private:
-        State* currentState;
         Wheel* leftWheel;
         Wheel* rightWheel;
     };

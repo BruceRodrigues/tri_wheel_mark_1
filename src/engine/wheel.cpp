@@ -7,6 +7,7 @@ using namespace Engine;
 const int MAX_SPEED = 255;
 const int MIN_SPEED = 0;
 const int SPEED_STEP = 10;
+const int SPEED = 150;
 
 Wheel::Wheel(int forwardPin, int backwardPin, int pwmPin) {
     this->forwardPin = forwardPin;
@@ -37,12 +38,21 @@ void Wheel::reset() {
     analogWrite(this->pwmPin, this->speed);
 }
 
+void Wheel::setSpeed(int speed) {
+    this->speed = speed;
+    analogWrite(this->pwmPin, this->speed);
+}
+
+void Wheel::turn() {
+    analogWrite(this->pwmPin, SPEED * 0);
+}
+
 void Wheel::gas() {
     if ( this->speed >= MAX_SPEED ) {
         return;
     }
 
-    this->speed += SPEED_STEP;
+    this->speed = SPEED;
     analogWrite(this->pwmPin, this->speed);
 
     if (DEBUG) {
@@ -56,7 +66,7 @@ void Wheel::breaking() {
         return;
     }
 
-    this->speed -= SPEED_STEP;
+    this->speed = 0;
     analogWrite(this->pwmPin, this->speed);
 
     if (DEBUG) {

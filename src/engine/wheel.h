@@ -13,6 +13,8 @@ namespace Engine {
         void reset();
         void gas();
         void breaking();
+        void turn();
+        void setSpeed(int speed);
 
     private:
         int forwardPin;
