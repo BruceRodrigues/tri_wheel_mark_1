@@ -66,29 +66,24 @@ byte psxButtonToIndex(PsxButtons psxButtons) {
 }
 
 void dumpButtons(PsxButtons psxButtons) {
-	static PsxButtons lastB = 0;
 
-	if(psxButtons != lastB) {
-		lastB = psxButtons;     // Save it before we alter it
-		
-		Serial.print(F("Pressed: "));
+	Serial.print(F("Pressed: "));
 
-		for(byte i = 0; i < PSX_BUTTONS_NO; ++i) {
-			byte b = psxButtonToIndex(psxButtons);
-			if(b < PSX_BUTTONS_NO) {
-				PGM_BYTES_P bName = reinterpret_cast<PGM_BYTES_P>(pgm_read_ptr(&(psxButtonNames[b])));
-				Serial.print(PSTR_TO_F(bName));
-			}
-
-			psxButtons &= ~(1 << b);
-
-			if(psxButtons != 0) {
-				Serial.print(F(", "));
-			}
+	for(byte i = 0; i < PSX_BUTTONS_NO; ++i) {
+		byte b = psxButtonToIndex(psxButtons);
+		if(b < PSX_BUTTONS_NO) {
+			PGM_BYTES_P bName = reinterpret_cast<PGM_BYTES_P>(pgm_read_ptr(&(psxButtonNames[b])));
+			Serial.print(PSTR_TO_F(bName));
 		}
 
-		Serial.println();
+		psxButtons &= ~(1 << b);
+
+		if(psxButtons != 0) {
+			Serial.print(F(", "));
+		}
 	}
+
+	Serial.println();
 }
 
 const char ctrlTypeUnknown[] PROGMEM = "Unknown";
@@ -124,6 +119,7 @@ void Controller::setup() {
 
 void Controller::read() {
     static byte slx, sly, srx, sry;
+	static PsxButtons lastB = 0;
 	
 	fastDigitalWrite(PIN_HAVECONTROLLER, haveController);
 	
@@ -160,9 +156,16 @@ void Controller::read() {
 			Serial.println(F("Controller lost :("));
 			haveController = false;
 		} else {
-			fastDigitalWrite(PIN_BUTTONPRESS, !!psx.getButtonWord());
-			dumpButtons(psx.getButtonWord());
-
+			PsxButtons psxButtons = psx.getButtonWord();
+			fastDigitalWrite(PIN_BUTTONPRESS, !!psxButtons);
+			if(psxButtons != lastB) {
+				lastB = psxButtons;     // Save it before we alter it
+				if (DEBUG) {
+					dumpButtons(psxButtons);
+				}
+				this->onButtonPressed(psxButtons);
+			}
+		
 			byte lx, ly, rx, ry;
 			psx.getLeftAnalog(lx, ly);
 			psx.getRightAnalog(rx, ry);

@@ -1,8 +1,10 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
+#include <stdint.h>
+
 typedef void (*JoyChangedCallback)(int, int);
-typedef void (*ButtonPressedCallback)(int);
+typedef void (*ButtonPressedCallback)(uint16_t);
 
 namespace Input {
 
